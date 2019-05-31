@@ -8,15 +8,12 @@ Install NPM and Node,
 Run the npm init, 
 It should auto download the dependencies.
 
-What things you need to install the software and how to install them
-
-Give examples
-
-Installing
-
-A step by step series of examples that tell you how to get a development env running
-
 run the server
+
+    npm run dev
+ you would get a listening to port 3000.
+ 
+ fire up the index.html and enter your twitter handle.
 
 npm run dev
 
