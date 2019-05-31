@@ -1,4 +1,5 @@
 function loadCharts(response_data) {
+    console.log(response_data);
     var ctx = document.getElementById('myChart-pie').getContext('2d');
     var myChart1 = new Chart(ctx, {
         type: 'pie',
@@ -6,7 +7,7 @@ function loadCharts(response_data) {
             labels: response_data.label,
             datasets: [{
                 label: '# of Followers',
-                data: response_data.data_value,
+                data: response_data.data,
                 backgroundColor: [
                     'rgba(255, 99, 132, 1)',
                     'rgba(54, 162, 235, 1)',
@@ -39,15 +40,15 @@ function loadCharts(response_data) {
                 yAxes: [{
                     ticks: {
                         beginAtZero: true,
-                        min:Math.min(...response_data.data_value),
-                        max:Math.max(...response_data.data_value),
+                        min: Math.min(...response_data.data),
+                        max: Math.max(...response_data.data),
                     }
                 }]
             }
         },
-    }); 
+    });
     myChart1.update()
-    
+
     var ctx1 = document.getElementById('myChart-bar').getContext('2d');
     var myChart2 = new Chart(ctx1, {
         type: 'bar',
@@ -55,7 +56,7 @@ function loadCharts(response_data) {
             labels: response_data.label,
             datasets: [{
                 label: '# of Friends',
-                data: response_data.friend_data,
+                data: response_data.friends_count,
                 backgroundColor: [
                     'rgba(255, 99, 132, 1)',
                     'rgba(54, 162, 235, 1)',
@@ -88,12 +89,12 @@ function loadCharts(response_data) {
                 yAxes: [{
                     ticks: {
                         beginAtZero: false,
-                        min:Math.min(...response_data.data_value),
+                        min: Math.min(...response_data.friends_count),
                     }
                 }]
             }
         },
-    });  
+    });
 }
 
 function getRandomColor() {

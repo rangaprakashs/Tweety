@@ -36,8 +36,8 @@ app.get('/twitter:data', function (req, res) {
 function getTwitterFollowers(params, callback) {
     let twitResponse = {};
     T.get('followers/list', params, function (err, data, response) {
-        if(!data){
-            callback( err);
+        if (!data) {
+            callback(err);
         }
         twitResponse = data;
         callback(twitResponse);

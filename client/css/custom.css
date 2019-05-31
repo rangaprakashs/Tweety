@@ -1,22 +1,29 @@
 body {
     font-family: 'Raleway' !important;
- }
-
- .button-color{
-    color: rgb(255, 255, 255);
- }
- .btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .open>.dropdown-toggle.btn-primary {
-    color: rgb(255, 255, 255);
-    background-color:  rgb(255, 192, 19)   !important;
-    border-color: #f7f7f7; /*set the color you want here*/
 }
-.btn-primary{
+
+.button-color {
+    color: rgb(255, 255, 255);
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary.active,
+.open>.dropdown-toggle.btn-primary {
+    color: rgb(255, 255, 255);
+    background-color: rgb(255, 192, 19) !important;
+    border-color: #f7f7f7;
+    /*set the color you want here*/
+}
+
+.btn-primary {
     color: rgb(0, 0, 0);
-    border-color: #f7f7f7; 
-    background-color:  rgba(150, 247, 85, 0.87)   !important;
+    border-color: #f7f7f7;
+    background-color: rgba(150, 247, 85, 0.87) !important;
 }
 
-.background-color{
+.background-color {
     background-color: rgb(34, 83, 216);
     color: #fff;
 }

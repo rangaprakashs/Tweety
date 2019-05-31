@@ -1,154 +1,152 @@
+'use strict';
 var UI = (function UI() {
-    'use strict';
-    let $submit_button = $('[rel*="js-input-submit"]');
-    let $user_input_element = $('[rel*="js-input-text"]');
-    let $loading = $('#loading').hide();
-    let h2element = document.getElementById('u-name');
-    let user_input_data = '';
-    let formatted_data = [];
-    let $sorted_data = [];
-
-    let utility = {
-        API_URL: 'http://localhost:3000/twitter',
-        validateUserInput: function validateUserInput(user_input_data) {
-            if (user_input_data.length > 0 && user_input_data.search(/^[a-zA-Z0-9_-]{1,30}$/) > -1) {
-                h2element.innerHTML = "Hello! " + user_input_data;
+    //helper methods.
+    var helper = {
+        validateUserInput: function validateUserInput(user_input) {
+            if (/^[a-zA-Z0-9_]{1,50}/.test(user_input) &&
+                user_input.length > 0 &&
+                user_input !== '') {
                 return true;
-            } else {
-                this.invalidate();
-                $loading.hide();
-                return false;
             }
+            return false;
+        },
+        invalidate: function invalidate() {
+            $loading.hide();
 
         },
+        api_url: 'http://localhost:3000/twitter',
+
         invalidate: function invalidate(message) {
+            console.log(message);
+            h2element.innerHTML = "Error! " + message;
             $user_input_element.addClass('is-invalid');
-            h2element.innerHTML = message + " Try Again!";
-            $loading.hide();
-            return false
-        },
-        validate : function validate(){
-            $user_input_element.addClass('is-valid');
-        }
-    };
 
-    var click_handler = $submit_button.on('click', function () {
-        fetch_userinput();
-        if (utility.validateUserInput(user_input_data)) {
-            $loading.show();
-            fetchDataFromAPI(user_input_data);
-            utility.validate();
-        } else {
-            utility.invalidate("Invalid Input");
         }
-    })
-
-    function fetch_userinput() {
-        user_input_data = $user_input_element.val();
-        $submit_button.prop('disabled', true); 
-        return;
     }
 
+    var $submit_button = $('[rel*="js-input-submit"]');
+    var $user_input_element = $('[rel*="js-input-text"]');
+    var $loading = $('#loading').hide();
+    var h2element = document.getElementById('u-name');
 
-    function fetchDataFromAPI(user_input_data) {
-        get_twitter_data(user_input_data, function (response) {
-            if (response.statusText === 'error') {
-                utility.invalidate(response.statusText);
-                return;
-            }
-            $loading.hide();
+    $submit_button.on('click', clickHandler);
 
-            formatServerData(response, function (data) {
-                formatted_data = data;
-                console.log(formatted_data)
-                sort_formatted_data(formatted_data, function (sorted_data) {
-                    $sorted_data = sorted_data;
-                    
-                })
-            });
-
-            make_dataset($sorted_data, 10,function (result){
-                console.log(result);
-                loadCharts(result);
-            });
-        });
-      
+    function clickHandler() {
+        var user_input = $user_input_element.val()
+        if (!helper.validateUserInput(user_input)) {
+            helper.invalidate("Invalid Twitter Handle");
+            return;
+        }
+        $loading.show();
+        $user_input_element.addClass('is-valid');
+        h2element.innerHTML = user_input;
+        fetchUserHandle(user_input);
     }
 
-    function get_twitter_data(user_input, response_callback) {
-        //build the response...
-        let user_input_obj = {
+    function fetchUserHandle(user_input) {
+        getData(user_input);
+    }
+
+    function getData(user_input) {
+        var user_data = {
             screen_name: user_input
         };
-        let url = utility.API_URL + JSON.stringify(user_input_obj);
+        var url = helper.api_url + JSON.stringify(user_data);
         $.ajax({
             type: 'GET',
             url: url,
-        }).done(function (response, err) {     
-            $submit_button.prop('disabled', true);
-            console.log(response); 
-            if(response.error|| response.errors){
-                utility.invalidate("Error :"+(response.error||response.errors[0].message) +" from twitter")    
-                return;
-            }      
-            response_callback(response,err);
-            $loading.hide();
-          
-
+        }).done(function (response) {
+            validate_response(response);
         }).fail(function (err) {
-            console.log(err);
-            $submit_button.prop('disabled', false);
-            response_callback(err);
-            utility.invalidate("failed to make a call!!");
-        }).always(function(){
-            $submit_button.prop('disabled', false);
-        })
+            validate_response(err);
+        }).always(function () {
+            $loading.hide();
+        });
+    };
 
-    }
+    function validate_response(response) {
 
-    function formatServerData(response_data, result_set) {
-        if(!response_data.users){return;}
-        let users = response_data.users;     
-
-        let chart_data = [];
-
-        if (response_data.users.length > 0) {
-            for (let i = 0; i < users.length; i++) {
-                chart_data.push({
-                    followers_count: users[i].followers_count,
-                    friends_count: users[i].friends_count,
-                    favourites_count: users[i].favourites_count,
-                    name: users[i].name,
-                    screen_name: users[i].screen_name
-                });
-            }
+        console.log(response);
+        if (response.error) {
+            helper.invalidate("Failed Twitter Call!")
+            return;
         }
-        result_set(chart_data)
-    }
-
-    function sort_formatted_data(chart_data, result_data) {
-        let sorted_data = [];
-        if (chart_data.length > 0) {
-            for (let i = 0; i < chart_data.length; i++) {
-                sorted_data = chart_data.sort(function (a, b) {
-                    return b.followers_count - a.followers_count;
-                })
-            }
+        if (response.users === 'undefined') {
+            helper.invalidate("Incorrect Response from Twitter");
+            return;
         }
-        result_data(sorted_data);
+        if (response.errors) {
+            helper.invalidate("Invalid Response " + response.errors[0].message);
+            return;
+        }
+
+        if (response.users <= 0) {
+            return false;
+        }
+        if (response.statusText === "error") {
+            helper.invalidate("Connection Error! to Server")
+            return false;
+        }
+        if (response.users.length < 10) {
+            helper.invalidate("The User has too few  Data to Chartify")
+            return false;
+        }
+        console.log('Response Validated!' + JSON.stringify(response));
+        loadData(response.users);
+
     }
 
-    function make_dataset(data_array, limit,response_callback) {
+    function loadData(users) {
+
+        let relevant_data = [];
+        for (let i = 0; i < users.length; i++) {
+            relevant_data.push({
+                followers_count: users[i].followers_count,
+                friends_count: users[i].friends_count,
+                favourites_count: users[i].favourites_count,
+                name: users[i].name,
+                screen_name: users[i].screen_name
+            });
+        }
+
+        sort_data(relevant_data, function (data) {
+            relevant_data = data;
+        });
+
+        make_chart_data(relevant_data, 10, function (data) {
+            console.log(data);
+            console.log("Now just load the charts");
+
+            loadCharts(data);
+        }); // return the response after sorting the dataset        
+    }
+
+
+    function sort_data(relevant_data, callback) {
+        var sorted_data = [];
+        sorted_data = relevant_data.sort(function (a, b) {
+            return b.followers_count - a.followers_count;
+        });
+
+        callback(sorted_data);
+    }
+
+    function make_chart_data(relevant_data, limit, callback) {
         let label = [];
-        let data_value = [];
-        let friend_data = [];
+        let data = [];
+        let friends_count = [];
+
         for (let i = 0; i < limit; i++) {
-            data_value.push(data_array[i].followers_count);
-            label.push(data_array[i].screen_name);
-            friend_data.push(data_array[i].friends_count);
+            label.push(relevant_data[i].name);
+            data.push(relevant_data[i].followers_count);
+            friends_count.push(relevant_data[i].friends_count);
         }
-        let data_set = { label,data_value,friend_data };
-        response_callback(data_set);
+        let dataset = {
+            label: label,
+            data: data,
+            friends_count: friends_count
+        };
+        callback(dataset);
     }
 
 })();
