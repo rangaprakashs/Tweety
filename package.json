@@ -1,0 +1,17 @@
+{
+  "name": "tweet_swym",
+  "version": "0.0.3",
+  "description": "A Twitter API Chart loader.",
+  "main": "server-handler.js",
+  "scripts": {
+    "dev": "nodemon server/server-handler.js"
+  },
+  "author": "Ranga",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "nodemon": "^1.19.1",
+    "twit": "^2.2.11"
+  }
+}

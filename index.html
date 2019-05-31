@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<h1 class="align-top">Tweety Dashboard</h1>
+<body>
+    <hr>
+    <div class="container-fluid background-color">
+        <div class="row ">
+            <div class="col-md-6 text-center">
+                <h1 id="u-name" class="text-align-center"> Hello !</h1>
+                <div class="spinner-border" style="width: 4rem; height: 4rem;" role="status" id='loading'>
+                        <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+            <div class="col-md-6 text-center">
+                <h1 class="float-right-lg button-color"><strong>SWYM</strong></h1>
+                <h1>TechStars!</h1>
+                <div class="col-auto">
+                    <div class="input-group mb-2">
+                        <div class="input-group-append">
+                            <div class="input-group-text required">@</div>
+                        </div>
+                        <input type="text" class="form-control" id="input_text" placeholder="TwitterHandle"
+                            rel='js-input-text'>
+                    </div>
+                    <button type="button" class="btn btn-primary btn-block" rel='js-input-submit'><strong>Submit Query</strong></button>
+                    <hr>
+                    <br>
+                </div>
+            </div>
+            <br>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6 text-center">
+                <h2>Your Most Popular Tweeters</h2>
+                <canvas id="myChart-pie"></canvas>
+            </div>
+            <div class="col-md-6 text-center">
+                <h2>Your Most Prominent Friends</h2>
+                <canvas id="myChart-bar"></canvas>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div style="background-color: rgb(195, 33, 228); color: rgb(241, 241, 241); text-align: center"><h6><em>Powered by Coffee & Love! </em> <hr></h6></div>
+</body>
+
+<!-- Charts JS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
+
+<!-- Jquery And Bootstrap -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+</script>
+<!-- Fonts and Custom CSS -->
+<link href="https://fonts.googleapis.com/css?family=Raleway::400,300,600&display=swap" rel="stylesheet">
+<link href="client/css/custom.css" rel="stylesheet">
+
+<!-- Data Scripts -->
+<script src="client/scripts/client.js"></script>
+<script src="client/scripts/chart_handler.js"></script>
+
+</html>
