@@ -1,4 +1,5 @@
 'use strict';
+
 var UI = (function UI() {
     //helper methods.
     var helper = {
@@ -10,24 +11,35 @@ var UI = (function UI() {
             }
             return false;
         },
-        invalidate: function invalidate() {
-            $loading.hide();
-
-        },
         api_url: 'http://localhost:3000/twitter',
 
         invalidate: function invalidate(message) {
-            console.log(message);
-            h2element.innerHTML = "Error! " + message;
+            h2element.innerHTML = "Error, " + message;
             $user_input_element.addClass('is-invalid');
+            $user_input_element.val("");
+        },
+        cleanUp: function cleanUp() {
+            $loading.hide();
+            $submit_button.attr('disabled', false)
+            $user_input_element.val("");
+            $user_input_element[0].focus();
+            $user_input_element.removeClass('is-valid');
 
+        },
+        updateUI: function updateUI(user_input) {
+            $loading.show();
+            $user_input_element.addClass('is-valid');
+            h2element.innerHTML = "Hello! " + user_input.charAt(0).toUpperCase() + user_input.slice(1);
+            $submit_button.attr('disabled', true)
         }
-    }
+    };
 
     var $submit_button = $('[rel*="js-input-submit"]');
     var $user_input_element = $('[rel*="js-input-text"]');
     var $loading = $('#loading').hide();
     var h2element = document.getElementById('u-name');
+
+   
 
     $submit_button.on('click', clickHandler);
 
@@ -37,13 +49,14 @@ var UI = (function UI() {
             helper.invalidate("Invalid Twitter Handle");
             return;
         }
-        $loading.show();
-        $user_input_element.addClass('is-valid');
-        h2element.innerHTML = user_input;
+        //make UI Changes
+        helper.updateUI(user_input);
+
         fetchUserHandle(user_input);
     }
 
     function fetchUserHandle(user_input) {
+        //get the data from twitter using our node server
         getData(user_input);
     }
 
@@ -55,18 +68,20 @@ var UI = (function UI() {
         $.ajax({
             type: 'GET',
             url: url,
-        }).done(function (response) {
-            validate_response(response);
+        }).done(function (response, xhr) {
+            if (xhr === "success") {
+                validate_response(response);
+            } else {
+                helper.invalidate("No Proper Response");
+            }
         }).fail(function (err) {
             validate_response(err);
         }).always(function () {
-            $loading.hide();
+            helper.cleanUp();
         });
     };
 
     function validate_response(response) {
-
-        console.log(response);
         if (response.error) {
             helper.invalidate("Failed Twitter Call!")
             return;
@@ -79,7 +94,6 @@ var UI = (function UI() {
             helper.invalidate("Invalid Response " + response.errors[0].message);
             return;
         }
-
         if (response.users <= 0) {
             return false;
         }
@@ -91,13 +105,10 @@ var UI = (function UI() {
             helper.invalidate("The User has too few  Data to Chartify")
             return false;
         }
-        console.log('Response Validated!' + JSON.stringify(response));
         loadData(response.users);
-
     }
 
     function loadData(users) {
-
         let relevant_data = [];
         for (let i = 0; i < users.length; i++) {
             relevant_data.push({
@@ -109,18 +120,14 @@ var UI = (function UI() {
             });
         }
 
-        sort_data(relevant_data, function (data) {
-            relevant_data = data;
+        sort_data(relevant_data, function (sorted_data) {
+            relevant_data = sorted_data;
         });
 
         make_chart_data(relevant_data, 10, function (data) {
-            console.log(data);
-            console.log("Now just load the charts");
-
             loadCharts(data);
         }); // return the response after sorting the dataset        
     }
-
 
     function sort_data(relevant_data, callback) {
         var sorted_data = [];
@@ -148,5 +155,5 @@ var UI = (function UI() {
         };
         callback(dataset);
     }
-
-})();
+})(); //to avoid clutering the global scope..
+//

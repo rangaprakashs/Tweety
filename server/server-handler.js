@@ -20,7 +20,6 @@ app.get('/', function (req, res) {
 })
 
 app.get('/twitter:data', function (req, res) {
-    let response_obj;
     if (req.param.data !== '') {
         let user_request = JSON.parse(req.params.data);
         let params = {
