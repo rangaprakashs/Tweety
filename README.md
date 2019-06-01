@@ -4,7 +4,7 @@ A Twitter API request/Response Dashboard.
 Clone/ download this repo.
 
 Install NPM and Node,
-Run the npm init, 
+Run the npm install, 
 It should auto download the dependencies.
 run the server
 
