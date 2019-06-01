@@ -21,8 +21,9 @@ Dependencies
     NPM - Dependency Management    
     TWIT - Node JS Twitter API 
     
-    You'll need the Twitter API Key. 
-    In this format
+   You'll need the Twitter API Key. 
+   In this format
+   
     const config = {
     consumer_key: 'xxxxxxxxxxxxxxxxxxxx',
     consumer_secret: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
